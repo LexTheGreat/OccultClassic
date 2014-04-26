@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ParticleSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <MinNumParticles>10</MinNumParticles>
+    <MaxNumParticles>12</MaxNumParticles>
+    <TextureFilename>Content/textures/explosion.png</TextureFilename>
+    <MinInitialSpeed>40</MinInitialSpeed>
+    <MaxInitialSpeed>500</MaxInitialSpeed>
+    <AccelerationMode>EndVelocity</AccelerationMode>
+    <EndVelocity>0</EndVelocity>
+    <MinRotationSpeed>-45</MinRotationSpeed>
+    <MaxRotationSpeed>45</MaxRotationSpeed>
+    <MinLifetime>.5</MinLifetime>
+    <MaxLifetime>1.0</MaxLifetime>
+    <MinSize>.3</MinSize>
+    <MaxSize>1.0</MaxSize>
+    <BlendMode>Add</BlendMode>
+</ParticleSettings>

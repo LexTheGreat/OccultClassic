@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GameSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Icon>icon.png</Icon>
+  <ContentDirectory>Content</ContentDirectory>
+  <SoundDirectory>Sounds</SoundDirectory>
+  <SoundExtension>ogg</SoundExtension>
+  <UpdaterateLimit>1</UpdaterateLimit>
+  <ClearColor>
+    <R>0</R>
+    <G>0</G>
+    <B>0</B>
+    <A>1</A>
+    <ByteR>0</ByteR>
+    <ByteG>0</ByteG>
+    <ByteB>0</ByteB>
+    <ByteA>255</ByteA>
+  </ClearColor>
+  <Title>Occult Classic</Title>
+  <Style>Close</Style>
+  <VerticalSync>true</VerticalSync>
+  <FramerateLimit>0</FramerateLimit>
+  <MajorVersion>1</MajorVersion>
+  <MinorVersion>4</MinorVersion>
+  <Width>800</Width>
+  <Height>600</Height>
+  <AntialiasingLevel>4</AntialiasingLevel>
+  <DepthBits>32</DepthBits>
+  <StencilBits>0</StencilBits>
+  <BitsPerPixel>32</BitsPerPixel>
+</GameSettings>
