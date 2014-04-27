@@ -9,7 +9,7 @@ using SFML.Window;
 
 namespace OccultClassic.States
 {
-	public class Menu : StateUi
+	public class Menu : StateGUI
 	{
 		private Sprite background;
 		private Sprite logo;
@@ -29,21 +29,21 @@ namespace OccultClassic.States
 			Audio.PlayMusic ("Content/music/amanita.it.ogg");
 		}
 
-		public override void LoadGui(Canvas gameGui)
+		public override void LoadGUI(Canvas gameGUI)
 		{
-			var lblElapsed = new Label (gameGui);
+			var lblElapsed = new Label (gameGUI);
 			lblElapsed.Text = "waiting...";
 			lblElapsed.SetPosition (10, 10);
 			Gwen.GuiManager.Set<Label>("Elapsed", lblElapsed);
 
-			var btnCreate = new Button(gameGui);
+			var btnCreate = new Button(gameGUI);
 			btnCreate.Text = "Create game";
 			btnCreate.SetPosition(195, 550);
 			btnCreate.SetSize(200, 40);
 			btnCreate.SetImage("Content/textures/gui/buttons/create.png");
 			btnCreate.Clicked += btnCreate_Clicked;
 
-			var btnJoin = new Button(gameGui);
+			var btnJoin = new Button(gameGUI);
 			btnJoin.Text = "Join game";
 			btnJoin.SetPosition(btnCreate.X + btnCreate.Width + 10, btnCreate.Y);
 			btnJoin.SetSize(btnCreate.Width, btnCreate.Height);

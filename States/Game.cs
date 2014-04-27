@@ -13,31 +13,30 @@ using OccultClassic.World;
 
 namespace OccultClassic.States
 {
-	public class Game : StateUi
+	public class Game : StateGUI
 	{
 		Map mapRenderer;
 		Camera mapCamera;
 		LightEngine lights;
 
 		// speed with what is character moving
-		const float MoveSpeed = 15f;
+		const float MoveSpeed = 1f;
 
 		public Game(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
 			: base(game, GuiImagePath, FontName, FontSize)
 		{
-
-			PlayerManager.Players.Add (1, new Player ("Thomas", Content.Get<Texture> ("characters"), Content.Get<Font> ("CONSOLA")));
-			PlayerManager.LocalIndex = 1;
-
-			PlayerManager.LocalPlayer.Position = new Vector2 (
-				GraphicsDevice.Size.X / 2f - 16f,
-				GraphicsDevice.Size.Y / 2f - 16f);
-
 			InitializeTileEngine ();
 
 			InitializeLights ();
 
 			InitializeInput ();
+
+			PlayerManager.Players.Add (1, new Player (mapCamera, "Thomas", Content.Get<Texture> ("characters"), Content.Get<Font> ("CONSOLA")));
+			PlayerManager.LocalIndex = 1;
+
+			PlayerManager.LocalPlayer.Position = new Vector2 (
+				GraphicsDevice.Size.X / 2f - 16f,
+				GraphicsDevice.Size.Y / 2f - 16f);
 		}
 
 		public override void Draw (SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
@@ -51,23 +50,32 @@ namespace OccultClassic.States
 
 			PlayerManager.Draw (spriteBatch, effects);
 
+			spriteBatch.Draw (
+				Content.Get<Font> ("CONSOLA"),
+				"Local player position: " + PlayerManager.LocalPlayer.Position + " Camera position: " + mapCamera.Position,
+				12, new Vector2 (10, 10),
+				Color.White,
+				Vector2.One,
+				Vector2.Zero,
+				0f,
+				Text.Styles.Regular);
+
 			spriteBatch.End ();
 
-			GraphicsDevice.Draw (lights);
+			// GraphicsDevice.Draw (lights);
 		}
 
 		public override void Update(GameTime gameTime)
 		{
 			base.Update (gameTime);
-
 			PlayerManager.Update (gameTime);
 		}
 
 		private void InitializeTileEngine()
 		{
 			mapCamera = new Camera (new Rectangle (
-				(int)(PlayerManager.LocalPlayer.Position.X + PlayerManager.LocalPlayer.Sprite.SourceRect.Width / 2),
-				(int)(PlayerManager.LocalPlayer.Position.Y + PlayerManager.LocalPlayer.Sprite.SourceRect.Height / 2),
+				(int)(GraphicsDevice.Size.X / 2f),
+				(int)(GraphicsDevice.Size.Y / 2f),
 				(int)GraphicsDevice.GetView ().Size.X,
 				(int)GraphicsDevice.GetView ().Size.Y));
 			mapCamera.Smoothness = 0.005f;
@@ -99,11 +107,7 @@ namespace OccultClassic.States
 			GameInput["Down"].Add (Keyboard.Key.Down);
 			GameInput["Down"].OnHold += () => {
 				PlayerManager.LocalPlayer.Sprite.Play("Down");
-				PlayerManager.LocalPlayer.Move(
-					mapRenderer,
-					new Vector2(PlayerManager.LocalPlayer.Position.X,
-						PlayerManager.LocalPlayer.Position.Y + MoveSpeed));
-				mapCamera.Position = PlayerManager.LocalPlayer.Position + PlayerManager.LocalPlayer.Sprite.SourceRect.Size / 2;
+				PlayerManager.LocalPlayer.Move(mapRenderer, new Vector2(0, MoveSpeed));
 			};
 			GameInput["Down"].OnRelease += () => {
 				PlayerManager.LocalPlayer.Sprite.Stop();
@@ -115,11 +119,7 @@ namespace OccultClassic.States
 			GameInput["Up"].Add (Keyboard.Key.Up);
 			GameInput["Up"].OnHold += () => {
 				PlayerManager.LocalPlayer.Sprite.Play("Up");
-				PlayerManager.LocalPlayer.Move(
-					mapRenderer,
-					new Vector2(PlayerManager.LocalPlayer.Position.X,
-						PlayerManager.LocalPlayer.Position.Y - MoveSpeed));
-				mapCamera.Position = PlayerManager.LocalPlayer.Position + PlayerManager.LocalPlayer.Sprite.SourceRect.Size / 2;
+				PlayerManager.LocalPlayer.Move(mapRenderer, new Vector2(0, -MoveSpeed));
 			};
 			GameInput["Up"].OnRelease += () => {
 				PlayerManager.LocalPlayer.Sprite.Stop();
@@ -131,11 +131,7 @@ namespace OccultClassic.States
 			GameInput["Left"].Add (Keyboard.Key.Left);
 			GameInput["Left"].OnHold += () => {
 				PlayerManager.LocalPlayer.Sprite.Play("Left");
-				PlayerManager.LocalPlayer.Move(
-					mapRenderer,
-					new Vector2(PlayerManager.LocalPlayer.Position.X - MoveSpeed,
-						PlayerManager.LocalPlayer.Position.Y));
-				mapCamera.Position = PlayerManager.LocalPlayer.Position + PlayerManager.LocalPlayer.Sprite.SourceRect.Size / 2;
+				PlayerManager.LocalPlayer.Move(mapRenderer, new Vector2(-MoveSpeed, 0));
 			};
 			GameInput["Left"].OnRelease += () => {
 				PlayerManager.LocalPlayer.Sprite.Stop();
@@ -147,11 +143,7 @@ namespace OccultClassic.States
 			GameInput["Right"].Add (Keyboard.Key.Right);
 			GameInput["Right"].OnHold += () => {
 				PlayerManager.LocalPlayer.Sprite.Play("Right");
-				PlayerManager.LocalPlayer.Move(
-					mapRenderer,
-					new Vector2(PlayerManager.LocalPlayer.Position.X + MoveSpeed,
-						PlayerManager.LocalPlayer.Position.Y));
-				mapCamera.Position = PlayerManager.LocalPlayer.Position + PlayerManager.LocalPlayer.Sprite.SourceRect.Size / 2;
+				PlayerManager.LocalPlayer.Move(mapRenderer, new Vector2(MoveSpeed,0));
 			};
 			GameInput["Right"].OnRelease += () => {
 				PlayerManager.LocalPlayer.Sprite.Stop();

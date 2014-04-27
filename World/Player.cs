@@ -10,55 +10,63 @@ namespace OccultClassic.World
 {
 	public class Player : IDrawable, IUpdateable
 	{
-		public Text Name;
-		public FrameAnimator Sprite;
+		private Text _name;
+		private AnimatedSprite _sprite;
+		private Vector2 _position;
 		private float _elapsedTime;
+		private Camera _camera;
+
+		public AnimatedSprite Sprite
+		{
+			get { return _sprite; }
+		}
 
 		public Vector2 Position
 		{
-			get { return Sprite.Position; }
+			get { return _position; }
 			set { 
-				Sprite.Position = value; 
-				Name.Position = new Vector2 (value.X + Sprite.SourceRect.Width / 2 - Name.Size.X / 2,
-					value.Y - Sprite.SourceRect.Height);
+				_position = value;
+				_sprite.Position = _camera.Transform (value);
+				_name.Position = new Vector2 (_sprite.Position.X + _sprite.SourceRect.Width / 2 - _name.Size.X / 2,
+					_sprite.Position.Y - Sprite.SourceRect.Height);
 			}
 		}
 
-		public Player (string name, Texture texture, Font font)
+		public Player (Camera camera, string name, Texture texture, Font font)
 		{
-			Name = new Text (font);
-			Name.String = name;
-			Name.CharacterSize = 12;
+			_camera = camera;
+			_name = new Text (font);
+			_name.DisplayedString = name;
+			_name.CharacterSize = 12;
 
-			Sprite = new FrameAnimator (texture);
+			_sprite = new AnimatedSprite (texture);
 
-			Sprite.Add ("Down");
-			Sprite["Down"].Duration = TimeSpan.FromSeconds (1);
-			Sprite["Down"].Add (new Rectangle (96, 0, 32, 32));
-			Sprite["Down"].Add (new Rectangle (160, 0, 32, 32));
+			_sprite.Add ("Down");
+			_sprite["Down"].Duration = TimeSpan.FromSeconds (1);
+			_sprite["Down"].Add (new Rectangle (96, 0, 32, 32));
+			_sprite["Down"].Add (new Rectangle (160, 0, 32, 32));
 
-			Sprite.Add ("Up");
-			Sprite["Up"].Duration = TimeSpan.FromSeconds (1);
-			Sprite["Up"].Add (new Rectangle (96, 96, 32, 32));
-			Sprite["Up"].Add (new Rectangle (160, 96, 32, 32));
+			_sprite.Add ("Up");
+			_sprite["Up"].Duration = TimeSpan.FromSeconds (1);
+			_sprite["Up"].Add (new Rectangle (96, 96, 32, 32));
+			_sprite["Up"].Add (new Rectangle (160, 96, 32, 32));
 
-			Sprite.Add ("Left");
-			Sprite["Left"].Duration = TimeSpan.FromSeconds (1);
-			Sprite["Left"].Add (new Rectangle (96, 32, 32, 32));
-			Sprite["Left"].Add (new Rectangle (160, 32, 32, 32));
+			_sprite.Add ("Left");
+			_sprite["Left"].Duration = TimeSpan.FromSeconds (1);
+			_sprite["Left"].Add (new Rectangle (96, 32, 32, 32));
+			_sprite["Left"].Add (new Rectangle (160, 32, 32, 32));
 
-			Sprite.Add ("Right");
-			Sprite["Right"].Duration = TimeSpan.FromSeconds (1);
-			Sprite["Right"].Add (new Rectangle (96, 64, 32, 32));
-			Sprite["Right"].Add (new Rectangle (160, 64, 32, 32));
+			_sprite.Add ("Right");
+			_sprite["Right"].Duration = TimeSpan.FromSeconds (1);
+			_sprite["Right"].Add (new Rectangle (96, 64, 32, 32));
+			_sprite["Right"].Add (new Rectangle (160, 64, 32, 32));
 
-			Sprite.SourceRect = new Rectangle (128, 0, 32, 32);
+			_sprite.SourceRect = new Rectangle (128, 0, 32, 32);
 		}
 
-		public void Move(Map map, Vector2 position)
+		public void Move(Map map, Vector2 offset)
 		{
-			var offset = Position - position;
-			var newPos = Position + (offset * _elapsedTime);
+			var newPos = _position + offset;
 			var rect = new Rectangle (
 				(int)newPos.X - 12, (int)newPos.Y - 4, 24, 24);
 			var canMove = true;
@@ -73,19 +81,22 @@ namespace OccultClassic.World
 			}
 
 			if (!map.Bounds.Intersects (rect)) canMove = false;
-			if (canMove) Position = newPos;
+			if (canMove) {
+				Position = newPos;
+				_camera.Position = newPos;
+			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
-			Sprite.Draw (spriteBatch, effects);
-			Name.Draw (spriteBatch, effects);
+			_sprite.Draw (spriteBatch, effects);
+			_name.Draw (spriteBatch, effects);
 		}
 
 		public void Update(GameTime gameTime)
 		{
 			_elapsedTime = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-			Sprite.Update (gameTime);
+			_sprite.Update (gameTime);
 		}
 	}
 }
