@@ -9,15 +9,18 @@ namespace OccultClassic
 	{
 		public Main (GameSettings gameSettings) : base(gameSettings)
 		{
-			Content.AddLoaders (ContentProvider.Default);
-
 			//Trigger main menu
 			StateFactory.SetState (
 				new Menu(
 					this,
 					"Content/textures/gui/skin.png",
-					"Content/fonts/CONSOLA.ttf",
+					"Content/fonts/OccultClassic.ttf",
 					15));
+		}
+
+		public override void LoadContent(ContentManager content)
+		{
+			content.AddLoaders (ContentProvider.Default);
 		}
 	}
 }

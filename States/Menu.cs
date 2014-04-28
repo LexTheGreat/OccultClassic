@@ -5,6 +5,7 @@ using Spooker.GameStates;
 using Spooker.Time;
 using Spooker.Graphics;
 using Spooker.Core;
+using Spooker.Content;
 using SFML.Window;
 
 namespace OccultClassic.States
@@ -16,13 +17,7 @@ namespace OccultClassic.States
 		private Sprite overlay;
 
 		public Menu(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
-			: base(game, GuiImagePath, FontName, FontSize)
-		{
-			background = new Sprite(Content.Get<Texture> ("gui/background"));
-			logo = new Sprite(Content.Get<Texture> ("gui/logo"));
-			logo.Position = (new Vector2 (GraphicsDevice.Size.X, GraphicsDevice.Size.Y) / 2) - (logo.Texture.Size / 2);
-			overlay = new Sprite(Content.Get<Texture> ("gui/overlay"));
-		}
+			: base(game, GuiImagePath, FontName, FontSize) { }
 
 		public override void Enter()
 		{
@@ -50,6 +45,14 @@ namespace OccultClassic.States
 			btnJoin.SetImage("Content/textures/gui/buttons/join.png");
 		}
 
+		public override void LoadContent(ContentManager content)
+		{
+			background = new Sprite(content.Get<Texture> ("gui/background"));
+			logo = new Sprite(content.Get<Texture> ("gui/logo"));
+			logo.Position = (new Vector2 (GraphicsDevice.Size.X, GraphicsDevice.Size.Y) / 2) - (logo.Texture.Size / 2);
+			overlay = new Sprite(content.Get<Texture> ("gui/overlay"));
+		}
+
 		public override void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
 			spriteBatch.Begin();
@@ -63,6 +66,7 @@ namespace OccultClassic.States
 
 		public override void Update(GameTime gameTime)
 		{
+			base.Update (gameTime);
 			Gwen.GuiManager.Get<Label> ("Elapsed").Text = "Elapsed: " + gameTime.ElapsedGameTime.TotalSeconds + "s";
 		}
 
@@ -72,7 +76,7 @@ namespace OccultClassic.States
 				new Game(
 					Game,
 					"Content/textures/gui/skin.png",
-					"Content/fonts/CONSOLA.ttf",
+					"Content/fonts/OccultClassic.ttf",
 					15));
 		}
 	}
