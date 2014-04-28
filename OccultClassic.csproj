@@ -34,6 +34,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="World\Script\LuaManager.cs" />
+    <Compile Include="World\Script\Mod.cs" />
+    <Compile Include="World\Script\ModManager.cs" />
     <Compile Include="World\PlayerManager.cs" />
     <Compile Include="States\Game.cs" />
     <Compile Include="States\Menu.cs" />
@@ -42,6 +45,10 @@
   <ItemGroup>
     <Reference Include="Gwen">
       <HintPath>bin\Debug\Gwen.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\NLua.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-audio-2">
       <HintPath>bin\Debug\sfmlnet-audio-2.dll</HintPath>
@@ -52,6 +59,7 @@
     <Reference Include="sfmlnet-window-2">
       <HintPath>bin\Debug\sfmlnet-window-2.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="TiledSharp">
       <HintPath>bin\Debug\TiledSharp.dll</HintPath>
     </Reference>
@@ -64,8 +72,5 @@
     </Reference>
     <Reference Include="System.Drawing" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="World\" />
-    <Folder Include="States\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>
