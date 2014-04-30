@@ -7,6 +7,7 @@ using Spooker.Graphics;
 using Spooker.Core;
 using Spooker.Content;
 using SFML.Window;
+using OccultClassic.World.Script;
 
 namespace OccultClassic.States
 {
@@ -21,6 +22,7 @@ namespace OccultClassic.States
 
 		public override void Enter()
 		{
+            LuaManager.hook.Call("onMenuLoad");
 			Audio.PlayMusic ("Content/music/amanita.it.ogg");
 		}
 

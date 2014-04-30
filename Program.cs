@@ -1,5 +1,6 @@
 ﻿using System;
 using Spooker.Core;
+using OccultClassic.World.Script;
 
 namespace OccultClassic
 {
@@ -11,12 +12,14 @@ namespace OccultClassic
         [STAThread]
         public static void Main(string[] args)
         {
+            LuaManager.init();
+
             /// Initialize game settings
 			var gameSettings = new GameSettings("settings.xml");
 
 			//Initialize game window
 			using (Main game = new Main (gameSettings))
 				game.Run();
-        } 
+        }
     }
 }

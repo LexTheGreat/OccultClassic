@@ -9,36 +9,32 @@ namespace OccultClassic.World.Mods
     {
         
         // Content/mods/
-        public static int LocalIndex;
-        public static Dictionary<int, Mod> Mods = new Dictionary<int, Mod>();
+        public Dictionary<int, Mod> Mods = new Dictionary<int, Mod>();
 
-        public ModManager()
-        {
-            Mods.Add(0, new Mod(""));
-        }
-
-        public static void Update()
+        public void Update()
         {
             foreach (var Mod in Mods.Values)
                 Mod.reload();
         }
 
-        public static Mod Mod(int index)
+        public Mod Mod(int index)
         {
             if (Mods.ContainsKey(index))
                 return Mods[index]; else return Mods[0];
         }
 
-        public static Mod Mod(string name)
+        public Mod Mod(string name)
         {
+            foreach (var Mod in Mods.Values)
+                if (Mod._name == name) return Mod;
+
             return Mods[0];
         }
 
-        public static void Add(string name)
+        public void Add(string name)
         {
             var mod = new Mod(name);
-            mod._name = name;
-
+            Mods.Add(Mods.ToArray().Length + 1, mod);
         }
     }
 }

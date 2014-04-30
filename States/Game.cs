@@ -12,6 +12,7 @@ using Spooker.Time;
 using Spooker.Content;
 using OccultClassic.World;
 using Gwen.Control;
+using OccultClassic.World.Script;
 
 namespace OccultClassic.States
 {
@@ -43,6 +44,8 @@ namespace OccultClassic.States
 			PlayerManager.LocalPlayer.Direction = Vector2.Zero;
 
 			mapCamera.Follow = PlayerManager.LocalPlayer;
+
+            LuaManager.hook.Call("onGameLoad");
 		}
 		
 		public override void Draw (SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
