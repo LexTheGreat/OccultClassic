@@ -35,7 +35,7 @@ function onGameLoad2()
 	util:cPrint("I load with the game :D AGAIN!")
 	hook:Remove("onGameLoad", "FirstMod_onGameLoad2")
 end
-hook:Add("onGameLoad", "FirstMod_onGameLoad2", onGameLoad2)'
+hook:Add("onGameLoad", "FirstMod_onGameLoad2", onGameLoad2)
 
 
 --[[

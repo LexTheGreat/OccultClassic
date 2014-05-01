@@ -10,7 +10,7 @@ namespace OccultClassic.World
 		public static int LocalIndex;
 		public static Dictionary<int, Player> Players = new Dictionary<int, Player> ();
 
-		public static Player LocalPlayer
+		public static Player Local
 		{
 			get { return Players [LocalIndex]; }
 		}

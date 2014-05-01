@@ -2,6 +2,7 @@ using System;
 using Spooker.Core;
 using Spooker.Content;
 using OccultClassic.States;
+using OccultClassic.World.Script;
 
 namespace OccultClassic
 {
@@ -9,6 +10,8 @@ namespace OccultClassic
 	{
 		public Main (GameSettings gameSettings) : base(gameSettings)
 		{
+			LuaManager.init();
+
 			//Trigger main menu
 			StateFactory.SetState (
 				new Menu(

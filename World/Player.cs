@@ -37,35 +37,27 @@ namespace OccultClassic.World
 
 			_sprite = new AnimatedSprite (texture);
 
-			_sprite.Add ("Down");
-			_sprite["Down"].Duration = TimeSpan.FromMilliseconds (200);
+			_sprite.Add ("Down", AnimType.Loop);
+			_sprite["Down"].Duration = GameSpan.FromMilliseconds (600);
 			_sprite["Down"].Add (new Rectangle (96, 0, 32, 32));
 			_sprite["Down"].Add (new Rectangle (160, 0, 32, 32));
 
-			_sprite.Add ("Up");
-			_sprite["Up"].Duration = TimeSpan.FromMilliseconds (200);
+			_sprite.Add ("Up", AnimType.Loop);
+			_sprite["Up"].Duration = GameSpan.FromMilliseconds (600);
 			_sprite["Up"].Add (new Rectangle (96, 96, 32, 32));
 			_sprite["Up"].Add (new Rectangle (160, 96, 32, 32));
 
-			_sprite.Add ("Left");
-			_sprite["Left"].Duration = TimeSpan.FromMilliseconds (200);
+			_sprite.Add ("Left", AnimType.Loop);
+			_sprite["Left"].Duration = GameSpan.FromMilliseconds (600);
 			_sprite["Left"].Add (new Rectangle (96, 32, 32, 32));
 			_sprite["Left"].Add (new Rectangle (160, 32, 32, 32));
 
-			_sprite.Add ("Right");
-			_sprite["Right"].Duration = TimeSpan.FromMilliseconds (200);
+			_sprite.Add ("Right", AnimType.Loop);
+			_sprite["Right"].Duration = GameSpan.FromMilliseconds (600);
 			_sprite["Right"].Add (new Rectangle (96, 64, 32, 32));
 			_sprite["Right"].Add (new Rectangle (160, 64, 32, 32));
 
 			_sprite.SourceRect = new Rectangle (128, 0, 32, 32);
-		}
-
-		public void UpdateCamera(Camera camera)
-		{
-			_sprite.Position = camera.Transform (Position - (_sprite.SourceRect.Size / 2));
-			_name.Position = new Vector2 (
-				_sprite.Position.X + _sprite.SourceRect.Width / 2 - _name.Size.X / 2,
-				_sprite.Position.Y - Sprite.SourceRect.Height);
 		}
 
 		public void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
@@ -77,8 +69,14 @@ namespace OccultClassic.World
 		public void Update(GameTime gameTime)
 		{
 			_sprite.Update (gameTime);
+			_sprite.Position = Position;
+			_sprite.Origin = _sprite.SourceRect.Size / 2;
+			_name.Position = new Vector2 (
+				_sprite.Position.X,
+				_sprite.Position.Y - Sprite.SourceRect.Height);
+			_name.Origin = _name.Size / 2;
 
-			var dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+			var dt = (float)gameTime.ElapsedGameTime.Milliseconds;
 
 			var newPos = Position + (Direction * ((MoveSpeed / 100) * dt));
 			var rect = new Rectangle (

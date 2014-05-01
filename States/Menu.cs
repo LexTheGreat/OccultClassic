@@ -18,11 +18,13 @@ namespace OccultClassic.States
 		private Sprite overlay;
 
 		public Menu(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
-			: base(game, GuiImagePath, FontName, FontSize) { }
+			: base(game, GuiImagePath, FontName, FontSize)
+		{
+			LuaManager.hook.Call("onMenuLoad");
+		}
 
 		public override void Enter()
 		{
-            LuaManager.hook.Call("onMenuLoad");
 			Audio.PlayMusic ("Content/music/amanita.it.ogg");
 		}
 
@@ -57,19 +59,19 @@ namespace OccultClassic.States
 
 		public override void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
-			spriteBatch.Begin();
+			base.Draw (spriteBatch, effects);
+
+			spriteBatch.Begin ();
 			spriteBatch.Draw(background);
 			spriteBatch.Draw(logo);
 			spriteBatch.Draw(overlay);
 			spriteBatch.End();
-
-			base.Draw (spriteBatch);
 		}
 
 		public override void Update(GameTime gameTime)
 		{
 			base.Update (gameTime);
-			Gwen.GuiManager.Get<Label> ("Elapsed").Text = "Elapsed: " + gameTime.ElapsedGameTime.TotalSeconds + "s";
+			Gwen.GuiManager.Get<Label> ("Elapsed").Text = "Elapsed: " + gameTime.ElapsedGameTime.Seconds + "s";
 		}
 
 		private void btnCreate_Clicked(Base control, EventArgs args)

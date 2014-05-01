@@ -4,7 +4,8 @@
   <ContentDirectory>Content</ContentDirectory>
   <SoundDirectory>Sounds</SoundDirectory>
   <SoundExtension>ogg</SoundExtension>
-  <UpdaterateLimit>1</UpdaterateLimit>
+  <TimeStep>1</TimeStep>
+  <TimeStepCap>25</TimeStepCap>
   <ClearColor>
     <R>0</R>
     <G>0</G>
