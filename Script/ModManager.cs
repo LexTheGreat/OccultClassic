@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-namespace OccultClassic.World.Mods
+namespace OccultClassic.Script.Mods
 {
-    class ModManager
+	public class ModManager
     {
-        
-        // Content/mods/
         public Dictionary<int, Mod> Mods = new Dictionary<int, Mod>();
 
         public void Update()
         {
             foreach (var Mod in Mods.Values)
-                Mod.reload();
+				Mod.Reload();
         }
 
         public Mod Mod(int index)
@@ -26,7 +24,7 @@ namespace OccultClassic.World.Mods
         public Mod Mod(string name)
         {
             foreach (var Mod in Mods.Values)
-                if (Mod._name == name) return Mod;
+				if (Mod.Name == name) return Mod;
 
             return Mods[0];
         }

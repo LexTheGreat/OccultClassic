@@ -39,11 +39,11 @@
     <Compile Include="States\Menu.cs" />
     <Compile Include="World\Player.cs" />
     <Compile Include="World\MapManager.cs" />
-    <Compile Include="World\Script\LuaManager.cs" />
-    <Compile Include="World\Script\Mod.cs" />
-    <Compile Include="World\Script\ModManager.cs" />
-    <Compile Include="World\Script\LuaCore\Hooks.cs" />
-    <Compile Include="World\Script\LuaCore\Utilities.cs" />
+    <Compile Include="Script\LuaCore\Hooks.cs" />
+    <Compile Include="Script\LuaCore\Utilities.cs" />
+    <Compile Include="Script\LuaManager.cs" />
+    <Compile Include="Script\Mod.cs" />
+    <Compile Include="Script\ModManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Gwen">
@@ -79,6 +79,5 @@
   <ItemGroup>
     <Folder Include="World\" />
     <Folder Include="States\" />
-    <Folder Include="World\Script\" />
   </ItemGroup>
 </Project>

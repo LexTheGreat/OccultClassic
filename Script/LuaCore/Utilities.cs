@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OccultClassic.World.Script.LuaCore
+namespace OccultClassic.Script.LuaCore
 {
-    class Utilities
+	public class Utilities
     {
         public void cPrint(String Message)
         {
@@ -38,7 +38,5 @@ namespace OccultClassic.World.Script.LuaCore
                 }
             }
         }
-
-        
     }
 }

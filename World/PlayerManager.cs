@@ -7,8 +7,8 @@ namespace OccultClassic.World
 {
 	public class PlayerManager
 	{
-		public static int LocalIndex;
-		public static Dictionary<int, Player> Players = new Dictionary<int, Player> ();
+		public static string LocalIndex;
+		public static Dictionary<string, Player> Players = new Dictionary<string, Player> ();
 
 		public static Player Local
 		{

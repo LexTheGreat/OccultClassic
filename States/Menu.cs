@@ -7,7 +7,7 @@ using Spooker.Graphics;
 using Spooker.Core;
 using Spooker.Content;
 using SFML.Window;
-using OccultClassic.World.Script;
+using OccultClassic.Script;
 
 namespace OccultClassic.States
 {
@@ -20,7 +20,7 @@ namespace OccultClassic.States
 		public Menu(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
 			: base(game, GuiImagePath, FontName, FontSize)
 		{
-			LuaManager.hook.Call("onMenuLoad");
+			LuaManager.Hook.Call("onMenuLoad");
 		}
 
 		public override void Enter()

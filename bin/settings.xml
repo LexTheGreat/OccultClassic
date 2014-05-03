@@ -5,7 +5,7 @@
   <SoundDirectory>Sounds</SoundDirectory>
   <SoundExtension>ogg</SoundExtension>
   <TimeStep>1</TimeStep>
-  <TimeStepCap>25</TimeStepCap>
+  <TimeStepCap>500</TimeStepCap>
   <ClearColor>
     <R>0</R>
     <G>0</G>

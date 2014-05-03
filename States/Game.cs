@@ -11,7 +11,7 @@ using Spooker.Graphics.TiledMap;
 using Spooker.Time;
 using Spooker.Content;
 using OccultClassic.World;
-using OccultClassic.World.Script;
+using OccultClassic.Script;
 using Gwen.Control;
 
 namespace OccultClassic.States
@@ -22,6 +22,7 @@ namespace OccultClassic.States
 		LightEngine lights;
 		Texture lightTexture, character;
 		Font font;
+		float cameraRotation;
 		float dt;
 
 		public Game(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
@@ -36,35 +37,38 @@ namespace OccultClassic.States
 
 			InitializeLights ();
 
-			PlayerManager.Players.Add (1, new Player (MapManager.Local, "Thomas", character, font));
-			PlayerManager.LocalIndex = 1;
+			PlayerManager.Players.Add ("thomas", new Player (MapManager.Local, "Thomas", character, font));
+			PlayerManager.LocalIndex = "thomas";
 
 			PlayerManager.Local.Position = new Vector2 (
 				GraphicsDevice.Size.X / 2f - 16f,
 				GraphicsDevice.Size.Y / 2f - 16f);
-			PlayerManager.Local.MoveSpeed = 5f;
+			PlayerManager.Local.MoveSpeed = 3f;
 			PlayerManager.Local.Direction = Vector2.Zero;
 
 			mapCamera.Follow = PlayerManager.Local;
 
-			LuaManager.hook.Call("onGameLoad");
+			LuaManager.Hook.Call("onGameLoad");
 		}
 		
 		public override void Draw (SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
 			base.Draw (spriteBatch, effects);
 
-			// Tiled Map renderer begins and ends spriteBatch internally
-			spriteBatch.Draw (MapManager.Local);
-
 			spriteBatch.Begin (SpriteBlendMode.Alpha, SpriteSortMode.FrontToBack, mapCamera.Transform);
+
+			spriteBatch.Draw (MapManager.Local);
 
 			foreach (var obj in MapManager.Local.Objects)
 				spriteBatch.Draw (obj);
 
-			PlayerManager.Draw (spriteBatch, effects);
-
 			spriteBatch.End ();
+
+			mapCamera.Rotation = 0f;
+			spriteBatch.Begin (SpriteBlendMode.Alpha, SpriteSortMode.FrontToBack, mapCamera.Transform);
+			PlayerManager.Draw (spriteBatch, effects);
+			spriteBatch.End ();
+			mapCamera.Rotation = cameraRotation;
 
 			GraphicsDevice.Draw (lights);
 		}
@@ -79,6 +83,7 @@ namespace OccultClassic.States
 		public override void Update(GameTime gameTime)
 		{
 			dt = (float)gameTime.ElapsedGameTime.Milliseconds;
+			cameraRotation = mapCamera.Rotation;
 			base.Update (gameTime);
 			PlayerManager.Update (gameTime);
 		}
@@ -114,7 +119,9 @@ namespace OccultClassic.States
 			GameInput["Down"].Add (Keyboard.Key.Down);
 			GameInput["Down"].OnHold += () => {
 				PlayerManager.Local.Sprite.Play("Down");
-				PlayerManager.Local.Direction = new Vector2(0, 1);
+				PlayerManager.Local.Direction = new Vector2(
+					(float)Math.Sin(MathHelper.ToRadians(cameraRotation)),
+					(float)Math.Cos(MathHelper.ToRadians(cameraRotation)));
 			};
 			GameInput["Down"].OnRelease += () => {
 				PlayerManager.Local.Sprite.Stop();
@@ -127,7 +134,9 @@ namespace OccultClassic.States
 			GameInput["Up"].Add (Keyboard.Key.Up);
 			GameInput["Up"].OnHold += () => {
 				PlayerManager.Local.Sprite.Play("Up");
-				PlayerManager.Local.Direction = new Vector2(0, -1);
+				PlayerManager.Local.Direction = new Vector2(
+					-(float)Math.Sin(MathHelper.ToRadians(cameraRotation)),
+					-(float)Math.Cos(MathHelper.ToRadians(cameraRotation)));
 			};
 			GameInput["Up"].OnRelease += () => {
 				PlayerManager.Local.Sprite.Stop();
@@ -139,26 +148,14 @@ namespace OccultClassic.States
 			GameInput["Left"].Add (Keyboard.Key.A);
 			GameInput["Left"].Add (Keyboard.Key.Left);
 			GameInput["Left"].OnHold += () => {
-				PlayerManager.Local.Sprite.Play("Left");
-				PlayerManager.Local.Direction = new Vector2(-1, 0);
-			};
-			GameInput["Left"].OnRelease += () => {
-				PlayerManager.Local.Sprite.Stop();
-				PlayerManager.Local.Sprite.SourceRect = new Rectangle (128, 32, 32, 32);
-				PlayerManager.Local.Direction = Vector2.Zero;
+				mapCamera.Rotation += 0.2f;
 			};
 
 			GameInput.Add("Right");
 			GameInput["Right"].Add (Keyboard.Key.D);
 			GameInput["Right"].Add (Keyboard.Key.Right);
 			GameInput["Right"].OnHold += () => {
-				PlayerManager.Local.Sprite.Play("Right");
-				PlayerManager.Local.Direction = new Vector2(1, 0);
-			};
-			GameInput["Right"].OnRelease += () => {
-				PlayerManager.Local.Sprite.Stop();
-				PlayerManager.Local.Sprite.SourceRect = new Rectangle (128, 64, 32, 32);
-				PlayerManager.Local.Direction = Vector2.Zero;
+				mapCamera.Rotation -= 0.2f;
 			};
 
 			GameInput.Add("ZoomIn");
@@ -171,18 +168,6 @@ namespace OccultClassic.States
 			GameInput["ZoomOut"].Add (Keyboard.Key.E);
 			GameInput["ZoomOut"].OnPress += () => {
 				mapCamera.Zoom -= 0.5f;
-			};
-
-			GameInput.Add("RotateRight");
-			GameInput["RotateRight"].Add (Keyboard.Key.R);
-			GameInput["RotateRight"].OnHold += () => {
-				mapCamera.Rotation += 0.2f;
-			};
-
-			GameInput.Add("RotateLeft");
-			GameInput["RotateLeft"].Add (Keyboard.Key.T);
-			GameInput["RotateLeft"].OnHold += () => {
-				mapCamera.Rotation -= 0.2f;
 			};
 		}
 	}

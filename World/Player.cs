@@ -77,20 +77,27 @@ namespace OccultClassic.World
 			_name.Origin = _name.Size / 2;
 
 			var dt = (float)gameTime.ElapsedGameTime.Milliseconds;
-
-			var newPos = Position + (Direction * ((MoveSpeed / 100) * dt));
+			var speed = (MoveSpeed / 100) * dt;
+			var newPos = Position + (speed * Direction);
 			var rect = new Rectangle (
-				(int)newPos.X - 12, (int)newPos.Y - 4, 24, 24);
+				           (int)newPos.X - 12, (int)newPos.Y - 4, 24, 24);
 			var canMove = true;
 
-			foreach (var obj in _map.Objects)
-			{
-				if (obj.Intersects(rect))
-				{
+			foreach (var obj in _map.Objects) {
+				if (obj.Intersects (rect)) {
 					canMove = false;
 					break;
 				}
 			}
+
+			//foreach (var ply in PlayerManager.Players.Values) {
+			//	var rect2 = new Rectangle (
+			//		(int)ply.Position.X - 12, (int)ply.Position.Y - 4, 24, 24);
+			//	if (rect2.Intersects (rect)) {
+			//		canMove = false;
+			//		break;
+			//	}
+			//}
 
 			if (!_map.Bounds.Intersects (rect)) canMove = false;
 			if (canMove) {
