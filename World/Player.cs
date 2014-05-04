@@ -5,6 +5,10 @@ using Spooker.Graphics;
 using Spooker.Graphics.Animations;
 using Spooker.Graphics.TiledMap;
 using Spooker.Time;
+using FarseerPhysics;
+using FarseerPhysics.Common;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 
 namespace OccultClassic.World
 {
@@ -13,10 +17,22 @@ namespace OccultClassic.World
 		private Text _name;
 		private AnimatedSprite _sprite;
 		private Map _map;
+		private Body _shape;
 
 		public Vector2 Direction;
 		public float MoveSpeed;
-		public Vector2 Position;
+
+		public Vector2 Position
+		{
+			get { 
+				var vec = ConvertUnits.ToDisplayUnits (_shape.Position);
+				return new Vector2 (vec.X, vec.Y);
+			}
+			set { 
+				var vec = new Vector2 (ConvertUnits.ToSimUnits (value.X), ConvertUnits.ToSimUnits (value.Y));
+				_shape.Position = new Microsoft.Xna.Framework.Vector2 (vec.X, vec.Y);
+			}
+		}
 
 		public AnimatedSprite Sprite
 		{
@@ -58,6 +74,11 @@ namespace OccultClassic.World
 			_sprite["Right"].Add (new Rectangle (160, 64, 32, 32));
 
 			_sprite.SourceRect = new Rectangle (128, 0, 32, 32);
+			_shape = BodyFactory.CreateRectangle (map.Physics,
+				ConvertUnits.ToSimUnits (_sprite.SourceRect.Width),
+				ConvertUnits.ToSimUnits (_sprite.SourceRect.Height), 1f);
+			_shape.BodyType = BodyType.Dynamic;
+			_shape.LinearDamping = 1;
 		}
 
 		public void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
@@ -76,33 +97,10 @@ namespace OccultClassic.World
 				_sprite.Position.Y - Sprite.SourceRect.Height);
 			_name.Origin = _name.Size / 2;
 
-			var dt = (float)gameTime.ElapsedGameTime.Milliseconds;
-			var speed = (MoveSpeed / 100) * dt;
-			var newPos = Position + (speed * Direction);
-			var rect = new Rectangle (
-				           (int)newPos.X - 12, (int)newPos.Y - 4, 24, 24);
-			var canMove = true;
+			var speed = MoveSpeed * (float)gameTime.ElapsedGameTime.Seconds;
+			var newPos = speed * Direction;
 
-			foreach (var obj in _map.Objects) {
-				if (obj.Intersects (rect)) {
-					canMove = false;
-					break;
-				}
-			}
-
-			//foreach (var ply in PlayerManager.Players.Values) {
-			//	var rect2 = new Rectangle (
-			//		(int)ply.Position.X - 12, (int)ply.Position.Y - 4, 24, 24);
-			//	if (rect2.Intersects (rect)) {
-			//		canMove = false;
-			//		break;
-			//	}
-			//}
-
-			if (!_map.Bounds.Intersects (rect)) canMove = false;
-			if (canMove) {
-				Position = newPos;
-			}
+			_shape.ApplyForce (ConvertUnits.ToSimUnits(new Microsoft.Xna.Framework.Vector2 (newPos.X, newPos.Y)));
 		}
 	}
 }

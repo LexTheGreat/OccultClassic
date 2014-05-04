@@ -5,7 +5,7 @@
   <SoundDirectory>Sounds</SoundDirectory>
   <SoundExtension>ogg</SoundExtension>
   <TimeStep>1</TimeStep>
-  <TimeStepCap>500</TimeStepCap>
+  <TimeStepCap>30</TimeStepCap>
   <ClearColor>
     <R>0</R>
     <G>0</G>
@@ -24,7 +24,7 @@
   <MinorVersion>4</MinorVersion>
   <Width>800</Width>
   <Height>600</Height>
-  <AntialiasingLevel>4</AntialiasingLevel>
+  <AntialiasingLevel>0</AntialiasingLevel>
   <DepthBits>32</DepthBits>
   <StencilBits>0</StencilBits>
   <BitsPerPixel>32</BitsPerPixel>

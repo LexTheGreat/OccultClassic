@@ -43,8 +43,7 @@ namespace OccultClassic.States
 			PlayerManager.Local.Position = new Vector2 (
 				GraphicsDevice.Size.X / 2f - 16f,
 				GraphicsDevice.Size.Y / 2f - 16f);
-			PlayerManager.Local.MoveSpeed = 3f;
-			PlayerManager.Local.Direction = Vector2.Zero;
+			PlayerManager.Local.MoveSpeed = 160f;
 
 			mapCamera.Follow = PlayerManager.Local;
 
@@ -84,6 +83,7 @@ namespace OccultClassic.States
 		{
 			dt = (float)gameTime.ElapsedGameTime.Milliseconds;
 			cameraRotation = mapCamera.Rotation;
+			MapManager.Local.Update (gameTime);
 			base.Update (gameTime);
 			PlayerManager.Update (gameTime);
 		}
@@ -105,7 +105,7 @@ namespace OccultClassic.States
 
 			foreach(var obj in MapManager.Local.Objects)
 			{
-				if (obj.Type == "Light") lights.Add (new Light (
+				if (obj.Properties.ContainsKey("Light")) lights.Add (new Light (
 					obj.Position + 16f,
 					float.Parse(obj.Properties ["Ratio"]),
 					Color.Gold));

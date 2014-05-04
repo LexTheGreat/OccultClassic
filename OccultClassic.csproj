@@ -75,6 +75,9 @@
     <Reference Include="KeraLua">
       <HintPath>bin\KeraLua.dll</HintPath>
     </Reference>
+    <Reference Include="FarseerPhysics">
+      <HintPath>bin\FarseerPhysics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="World\" />

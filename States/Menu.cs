@@ -6,6 +6,7 @@ using Spooker.Time;
 using Spooker.Graphics;
 using Spooker.Core;
 using Spooker.Content;
+using Spooker.Network;
 using SFML.Window;
 using OccultClassic.Script;
 
@@ -76,12 +77,11 @@ namespace OccultClassic.States
 
 		private void btnCreate_Clicked(Base control, EventArgs args)
 		{
-			StateFactory.SetState(
-				new Game(
-					Game,
-					"Content/textures/gui/skin.png",
-					"Content/fonts/OccultClassic.ttf",
-					15));
+			StateFactory.SetState (new Game (
+				Game,
+				"Content/textures/gui/skin.png",
+				"Content/fonts/OccultClassic.ttf",
+				15));
 		}
 	}
 }
