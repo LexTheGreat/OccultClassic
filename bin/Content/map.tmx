@@ -3165,7 +3165,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="Object Layer 1" width="35" height="30">
+ <objectgroup name="Static objects" width="35" height="30">
   <object x="224" y="352">
    <polygon points="0,0 0,32 -96,32 -96,-128 128,-128 128,32 32,32 32,0 96,0 96,-96 -64,-96 -64,0"/>
   </object>
@@ -3235,40 +3235,11 @@
     <property name="Ratio" value="1"/>
    </properties>
   </object>
-  <object type="Dynamic" gid="28" x="467" y="434" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="503" y="416" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="507" y="454" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="450" y="467" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="483" y="482" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="560" y="398" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
-  <object type="Dynamic" gid="28" x="583" y="435" width="32" height="32">
-   <properties>
-    <property name="LinearDamping" value="1"/>
-   </properties>
-  </object>
+ </objectgroup>
+ <objectgroup name="Dynamic objects" width="35" height="30">
+  <object gid="28" x="380" y="413" width="32" height="32"/>
+  <object gid="28" x="418" y="449" width="32" height="32"/>
+  <object gid="28" x="376" y="456" width="32" height="32"/>
+  <object gid="28" x="414" y="384" width="32" height="32"/>
  </objectgroup>
 </map>

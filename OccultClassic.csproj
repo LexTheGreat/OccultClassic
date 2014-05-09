@@ -32,7 +32,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Program.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs" />
     <Compile Include="World\PlayerManager.cs" />
     <Compile Include="States\Game.cs" />
@@ -77,6 +79,9 @@
     </Reference>
     <Reference Include="FarseerPhysics">
       <HintPath>bin\FarseerPhysics.dll</HintPath>
+    </Reference>
+    <Reference Include="Spooker.RPG">
+      <HintPath>bin\Spooker.RPG.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

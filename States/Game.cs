@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SFML.Window;
 using Spooker;
 using Spooker.Core;
@@ -13,79 +14,106 @@ using Spooker.Content;
 using OccultClassic.World;
 using OccultClassic.Script;
 using Gwen.Control;
+using FarseerPhysics;
+using FarseerPhysics.Common;
+using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 
 namespace OccultClassic.States
 {
 	public class Game : StateGUI
 	{
 		Camera mapCamera;
-		LightEngine lights;
-		Texture lightTexture, character;
 		Font font;
-		float cameraRotation;
-		float dt;
+		// For our Emitter test, we need both a ParticleEmitter and ParticleSystem
+		List<ParticleEmitter> emitters = new List<ParticleEmitter> ();
+		ParticleSystem emitterSystem;
 
 		public Game(GameWindow game, string GuiImagePath, string FontName, int FontSize) 
 			: base(game, GuiImagePath, FontName, FontSize)
 		{
-			InitializeTileEngine ();
-
-			InitializeInput ();
-
-			MapManager.Maps.Add ("map", new Map (mapCamera, "Content/map.tmx"));
+			MapManager.Maps.Add ("map", new Map ("Content/map.tmx"));
 			MapManager.LocalIndex = "map";
 
-			InitializeLights ();
-
-			PlayerManager.Players.Add ("thomas", new Player (MapManager.Local, "Thomas", character, font));
+			PlayerManager.Players.Add ("thomas", new Player ("Thomas", "characters"));
 			PlayerManager.LocalIndex = "thomas";
+			PlayerManager.Local.MoveSpeed = 50f;
+			var shape = BodyFactory.CreateRectangle (MapManager.Local.Physics,
+				ConvertUnits.ToSimUnits (16),
+				ConvertUnits.ToSimUnits (16), 1f);
+			shape.BodyType = BodyType.Dynamic;
+			shape.LinearDamping = 1;
+			PlayerManager.Local.CreateBody (shape);
 
-			PlayerManager.Local.Position = new Vector2 (
-				GraphicsDevice.Size.X / 2f - 16f,
-				GraphicsDevice.Size.Y / 2f - 16f);
-			PlayerManager.Local.MoveSpeed = 160f;
+			InitializeTileEngine ();
+			InitializeInput ();
 
 			mapCamera.Follow = PlayerManager.Local;
 
 			LuaManager.Hook.Call("onGameLoad");
 		}
+
+		public override void Enter()
+		{
+			base.Enter ();
+			PlayerManager.Local.Position = new Vector2 (
+				GraphicsDevice.Size.X / 2f - 16f,
+				GraphicsDevice.Size.Y / 2f - 16f);
+		}
 		
 		public override void Draw (SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
-			base.Draw (spriteBatch, effects);
-
 			spriteBatch.Begin (SpriteBlendMode.Alpha, SpriteSortMode.FrontToBack, mapCamera.Transform);
-
 			spriteBatch.Draw (MapManager.Local);
-
 			foreach (var obj in MapManager.Local.Objects)
 				spriteBatch.Draw (obj);
-
 			spriteBatch.End ();
 
+			var prev = mapCamera.Rotation;
 			mapCamera.Rotation = 0f;
 			spriteBatch.Begin (SpriteBlendMode.Alpha, SpriteSortMode.FrontToBack, mapCamera.Transform);
 			PlayerManager.Draw (spriteBatch, effects);
 			spriteBatch.End ();
-			mapCamera.Rotation = cameraRotation;
+			mapCamera.Rotation = prev;
 
-			GraphicsDevice.Draw (lights);
+			base.Draw (spriteBatch, effects);
 		}
 
 		public override void LoadContent(ContentManager content)
 		{
-			lightTexture = content.Get<Texture> ("lightmask");
 			font = content.Get<Font> ("OccultClassic");
-			character = content.Get<Texture> ("characters");
+			var lights = new LightEngine (mapCamera, content.Get<Texture> ("lightmask"));
+			lights.Add (new Light (new Vector2 (GraphicsDevice.Size.X, GraphicsDevice.Size.Y) / 2, 1.5f, Color.White, false));
+
+			emitterSystem = new ParticleSystem (Game, content.Get<ParticleSettings> ("Emitter"));
+			Components.Add(emitterSystem);
+
+			foreach(var obj in MapManager.Local.Objects)
+			{
+				if (obj.Properties.ContainsKey("Light"))
+				{
+					lights.Add (new Light (
+						obj.Position + 16f,
+						float.Parse (obj.Properties ["Ratio"]),
+						Color.Gold));
+					emitters.Add (new ParticleEmitter (
+						emitterSystem,
+						60,
+						obj.Position - new Vector2(0, 6)));
+				}
+			}
+
+			Components.Add (lights);
+			PlayerManager.Local.LoadContent (content);
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			dt = (float)gameTime.ElapsedGameTime.Milliseconds;
-			cameraRotation = mapCamera.Rotation;
-			MapManager.Local.Update (gameTime);
 			base.Update (gameTime);
+			MapManager.Local.Update (gameTime);
 			PlayerManager.Update (gameTime);
+			foreach (var emitter in emitters)
+				emitter.Update (gameTime, emitter.Position, mapCamera);
 		}
 
 		private void InitializeTileEngine()
@@ -98,20 +126,6 @@ namespace OccultClassic.States
 			Components.Add (mapCamera);
 		}
 
-		private void InitializeLights()
-		{
-			lights = new LightEngine (mapCamera, lightTexture);
-			lights.Add (new Light (new Vector2 (GraphicsDevice.Size.X, GraphicsDevice.Size.Y) / 2, 1.5f, Color.White, false));
-
-			foreach(var obj in MapManager.Local.Objects)
-			{
-				if (obj.Properties.ContainsKey("Light")) lights.Add (new Light (
-					obj.Position + 16f,
-					float.Parse(obj.Properties ["Ratio"]),
-					Color.Gold));
-			}
-		}
-
 		private void InitializeInput()
 		{
 			GameInput.Add("Down");
@@ -119,14 +133,13 @@ namespace OccultClassic.States
 			GameInput["Down"].Add (Keyboard.Key.Down);
 			GameInput["Down"].OnHold += () => {
 				PlayerManager.Local.Sprite.Play("Down");
-				PlayerManager.Local.Direction = new Vector2(
-					(float)Math.Sin(MathHelper.ToRadians(cameraRotation)),
-					(float)Math.Cos(MathHelper.ToRadians(cameraRotation)));
+				PlayerManager.Local.Direction = 1;
+				PlayerManager.Local.Rotation = mapCamera.Rotation;
 			};
 			GameInput["Down"].OnRelease += () => {
 				PlayerManager.Local.Sprite.Stop();
 				PlayerManager.Local.Sprite.SourceRect = new Rectangle (128, 0, 32, 32);
-				PlayerManager.Local.Direction = Vector2.Zero;
+				PlayerManager.Local.Direction = 0;
 			};
 
 			GameInput.Add("Up");
@@ -134,14 +147,13 @@ namespace OccultClassic.States
 			GameInput["Up"].Add (Keyboard.Key.Up);
 			GameInput["Up"].OnHold += () => {
 				PlayerManager.Local.Sprite.Play("Up");
-				PlayerManager.Local.Direction = new Vector2(
-					-(float)Math.Sin(MathHelper.ToRadians(cameraRotation)),
-					-(float)Math.Cos(MathHelper.ToRadians(cameraRotation)));
+				PlayerManager.Local.Direction = -1;
+				PlayerManager.Local.Rotation = mapCamera.Rotation;
 			};
 			GameInput["Up"].OnRelease += () => {
 				PlayerManager.Local.Sprite.Stop();
 				PlayerManager.Local.Sprite.SourceRect = new Rectangle (128, 96, 32, 32);
-				PlayerManager.Local.Direction = Vector2.Zero;
+				PlayerManager.Local.Direction = 0;
 			};
 
 			GameInput.Add("Left");

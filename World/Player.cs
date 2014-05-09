@@ -5,53 +5,45 @@ using Spooker.Graphics;
 using Spooker.Graphics.Animations;
 using Spooker.Graphics.TiledMap;
 using Spooker.Time;
-using FarseerPhysics;
-using FarseerPhysics.Common;
-using FarseerPhysics.Dynamics;
-using FarseerPhysics.Factories;
+using Spooker.RPG.World;
+using Spooker.Content;
 
 namespace OccultClassic.World
 {
-	public class Player : IDrawable, IUpdateable, Camera.IFollowable
+	public class Player : Creature, IDrawable, ITargetable
 	{
 		private Text _name;
 		private AnimatedSprite _sprite;
-		private Map _map;
-		private Body _shape;
 
-		public Vector2 Direction;
+		public float Direction;
 		public float MoveSpeed;
-
-		public Vector2 Position
-		{
-			get { 
-				var vec = ConvertUnits.ToDisplayUnits (_shape.Position);
-				return new Vector2 (vec.X, vec.Y);
-			}
-			set { 
-				var vec = new Vector2 (ConvertUnits.ToSimUnits (value.X), ConvertUnits.ToSimUnits (value.Y));
-				_shape.Position = new Microsoft.Xna.Framework.Vector2 (vec.X, vec.Y);
-			}
-		}
 
 		public AnimatedSprite Sprite
 		{
 			get { return _sprite; }
 		}
 
-		public Vector2 FollowPosition()
+		public Player (string name, string asset) : base(name)
 		{
-			return Position;
+			Asset = asset;
+			Vitals.Add ("HP", 100);
+			Vitals.Add ("MP", 100);
 		}
 
-		public Player (Map map, string name, Texture texture, Font font)
+		public override void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
 		{
-			_map = map;
-			_name = new Text (font);
-			_name.DisplayedString = name;
-			_name.CharacterSize = 12;
+			_sprite.Draw (spriteBatch, effects);
+			_name.Draw (spriteBatch, effects);
+		}
 
-			_sprite = new AnimatedSprite (texture);
+		public override void LoadContent(ContentManager content)
+		{
+			_name = new Text (content.Get<Font> ("OccultClassic"));
+			_name.DisplayedString = Name;
+			_name.CharacterSize = 12;
+			_name.Origin = _name.Size / 2;
+
+			_sprite = new AnimatedSprite (content.Get<Texture> (Asset));
 
 			_sprite.Add ("Down", AnimType.Loop);
 			_sprite["Down"].Duration = GameSpan.FromMilliseconds (600);
@@ -74,33 +66,24 @@ namespace OccultClassic.World
 			_sprite["Right"].Add (new Rectangle (160, 64, 32, 32));
 
 			_sprite.SourceRect = new Rectangle (128, 0, 32, 32);
-			_shape = BodyFactory.CreateRectangle (map.Physics,
-				ConvertUnits.ToSimUnits (_sprite.SourceRect.Width),
-				ConvertUnits.ToSimUnits (_sprite.SourceRect.Height), 1f);
-			_shape.BodyType = BodyType.Dynamic;
-			_shape.LinearDamping = 1;
+			_sprite.Origin = new Vector2 (
+				_sprite.SourceRect.Size.X / 2,
+				_sprite.SourceRect.Size.Y - 4);
 		}
 
-		public void Draw(SpriteBatch spriteBatch, SpriteEffects effects = SpriteEffects.None)
-		{
-			_sprite.Draw (spriteBatch, effects);
-			_name.Draw (spriteBatch, effects);
-		}
-
-		public void Update(GameTime gameTime)
+		public override void Update(GameTime gameTime)
 		{
 			_sprite.Update (gameTime);
 			_sprite.Position = Position;
-			_sprite.Origin = _sprite.SourceRect.Size / 2;
 			_name.Position = new Vector2 (
 				_sprite.Position.X,
-				_sprite.Position.Y - Sprite.SourceRect.Height);
-			_name.Origin = _name.Size / 2;
+				_sprite.Position.Y - Sprite.SourceRect.Height - 6);
 
 			var speed = MoveSpeed * (float)gameTime.ElapsedGameTime.Seconds;
-			var newPos = speed * Direction;
-
-			_shape.ApplyForce (ConvertUnits.ToSimUnits(new Microsoft.Xna.Framework.Vector2 (newPos.X, newPos.Y)));
+			var direction = Direction * new Vector2(
+				(float)Math.Sin(MathHelper.ToRadians(Rotation)),
+				(float)Math.Cos(MathHelper.ToRadians(Rotation)));
+			Move (speed * direction);
 		}
 	}
 }

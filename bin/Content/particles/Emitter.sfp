@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ParticleSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <MinNumParticles>1</MinNumParticles>
+    <MaxNumParticles>3</MaxNumParticles>
+    <TextureFilename>Content/textures/BlockParticle.png</TextureFilename>
+    <MinDirectionAngle>260</MinDirectionAngle>
+    <MaxDirectionAngle>280</MaxDirectionAngle>
+    <MinInitialSpeed>1</MinInitialSpeed>
+    <MaxInitialSpeed>5</MaxInitialSpeed>
+    <AccelerationMode>None</AccelerationMode>
+    <MinRotationSpeed>-45</MinRotationSpeed>
+    <MaxRotationSpeed>45</MaxRotationSpeed>
+    <MinLifetime>1</MinLifetime>
+    <MaxLifetime>2.5</MaxLifetime>
+    <MinSize>.5</MinSize>
+    <MaxSize>1</MaxSize>
+    <Gravity>
+		<X>0</X>
+		<Y>-20</Y>
+	</Gravity>
+</ParticleSettings>

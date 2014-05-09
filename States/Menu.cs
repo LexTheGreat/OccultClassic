@@ -26,6 +26,7 @@ namespace OccultClassic.States
 
 		public override void Enter()
 		{
+			base.Enter ();
 			Audio.PlayMusic ("Content/music/amanita.it.ogg");
 		}
 
