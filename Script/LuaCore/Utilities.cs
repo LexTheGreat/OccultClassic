@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using SFML.Window;
 namespace OccultClassic.Script.LuaCore
 {
 	public class Utilities
@@ -15,7 +15,7 @@ namespace OccultClassic.Script.LuaCore
             Console.WriteLine(Message);
             Console.ResetColor();
         }
-        public void cPrint(String Message, Object Color = null)
+        public void cPrint(String Message, Object Color)
         {
             String[] colorNames = ConsoleColor.GetNames(typeof(ConsoleColor));
             String TimeStamp = DateTime.Now.ToString("HH:mm:ss");
@@ -37,6 +37,10 @@ namespace OccultClassic.Script.LuaCore
                     return;
                 }
             }
+        }
+        public Keyboard.Key Key(int keyId)
+        {
+            return (Keyboard.Key)keyId;
         }
     }
 }
