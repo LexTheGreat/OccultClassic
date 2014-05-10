@@ -114,6 +114,7 @@ namespace OccultClassic.States
 			PlayerManager.Update (gameTime);
 			foreach (var emitter in emitters)
 				emitter.Update (gameTime, emitter.Position, mapCamera);
+            LuaManager.Hook.Call("onUpdate");
 		}
 
 		private void InitializeTileEngine()
@@ -181,6 +182,7 @@ namespace OccultClassic.States
 			GameInput["ZoomOut"].OnPress += () => {
 				mapCamera.Zoom -= 0.5f;
 			};
+            LuaManager.LuaObject["GameInput"] = GameInput;
 		}
 	}
 }

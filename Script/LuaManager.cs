@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace OccultClassic.Script
 {
@@ -17,11 +18,14 @@ namespace OccultClassic.Script
 		public static Hooks Hook = new Hooks();
 
 		public static void Init() { 
-            ModManager.Mods.Add(0, new Mod(""));
+            ModManager.Mods.Add(0, new Mod("")); // Defalt error mod, returns 'Unknown Mod'
 
             LuaObject["util"] = Utility;
 			LuaObject["hook"] = Hook;
-            ModManager.Add("FirstMod");
+
+            string[] Mods = Directory.GetDirectories(@"Content/mods/", "*", System.IO.SearchOption.TopDirectoryOnly);
+            foreach (string f in Mods)
+                ModManager.Add(f.Remove(0, 13));
         }
 
 		public static void ExecuteFile(string file)
